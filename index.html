@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoàng Long ĐLS - Hệ Thống Giày Bóng Đá</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+    <div class="header-top">
+        <div class="logo" onclick="goHome()"><span>⚽</span> HOÀNG LONG ĐLS</div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Tìm tên giày...">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="user-auth-area">
+            <div id="authButtons">
+                <span class="btn-auth" onclick="openAuthModal()"><i class="fas fa-user-circle"></i> Đăng nhập</span>
+            </div>
+    
+            <div id="userInfoDisplay" onclick="toggleUserMenu(event)">
+                <i class="fas fa-circle-user" style="font-size: 20px; color: var(--pink-main);"></i>
+                <span id="currentUserName" style="font-weight: bold;">Tên người dùng</span>
+                <i class="fas fa-caret-down"></i>
+        
+                <div class="user-dropdown" id="userDropdown">
+                     <div onclick="showAccountMgmt()"><i class="fas fa-user-gear"></i> Quản lý tài khoản</div>
+                     <div onclick="showOrderTracking()"><i class="fas fa-file-invoice-dollar"></i> Đơn hàng của tôi</div>
+                     <hr>
+                    <div onclick="handleLogout()" style="color: #ed4d8d;"><i class="fas fa-right-from-bracket"></i> Đăng xuất</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://zalo.me/0869109089" target="_blank" class="call-btn-shake">
+            <div style="text-align: right; line-height: 1.2;">Tư vấn khách hàng<br></div>
+            <div class="phone-circle"><i class="fa-brands fa-zalo" style="font-family: sans-serif; font-style: normal;">Z</i></div>
+        </a>
+    </div>
+
+    <nav>
+        <div class="nav-item" onclick="goHome()">Trang Chủ</div>
+        <div class="nav-item" onclick="showAllShoes()">
+            Giày Bóng Đá <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+            <div class="mega-menu" onclick="event.stopPropagation()">
+                <div class="mega-col">
+                    <h4>Nike Mercurial</h4>
+                    <ul>
+                        <li onclick="filterByMenu('Vic 6')">Nike Mercurial Vic 6</li>
+                        <li onclick="filterByMenu('Vapor 13')">Nike Mercurial Vapor 13</li>
+                        <li onclick="filterByMenu('Vapor 14')">Nike Mercurial Vapor 14</li>
+                        <li onclick="filterByMenu('Vapor 15')">Nike Mercurial Vapor 15</li>
+                        <li onclick="filterByMenu('Vapor 16')">Nike Mercurial Vapor 16</li>
+                    </ul>
+                </div>
+                <div class="mega-col">
+                    <h4>Nike Tiempo</h4>
+                    <ul>
+                        <li onclick="filterByMenu('Tiempo 10')">Nike Tiempo 10</li>
+                        <li onclick="filterByMenu('Tiempo 9')">Nike Tiempo 9</li>
+                        <li onclick="filterByMenu('Tiempo 8')">Nike Tiempo 8</li>
+                    </ul>
+                </div>
+                <div class="mega-col">
+                    <h4>Adidas</h4>
+                    <ul>
+                        <li onclick="filterByMenu('F50')">Adidas F50</li>
+                        <li onclick="filterByMenu('Crazyfast')">Adidas X Crazyfast</li>
+                        <li onclick="filterByMenu('Speedportal')">Adidas Speedportal</li>
+                        <li onclick="filterByMenu('Predator')">Adidas Predator</li>
+                        <li onclick="filterByMenu('X 19.1')">Adidas X 19.1</li>
+                    </ul>
+                </div>
+                <div class="mega-col">
+                    <h4>Mizuno</h4>
+                    <ul>
+                        <li onclick="filterByMenu('Neo')">Mizuno Neo</li>
+                        <li onclick="filterByMenu('Sala')">Mizuno Sala</li>
+                        <li onclick="filterByMenu('Alpha')">Mizuno Alpha</li>
+                    </ul>
+                </div>
+                <div class="mega-col">
+                    <h4>Hãng VN</h4>
+                    <ul>
+                        <li onclick="filterByMenu('Kamito')">KAMITO</li>
+                        <li onclick="filterByMenu('Winbro')">Winbro</li>
+                        <li onclick="filterByMenu('Wika')">Wika</li>
+                        <li onclick="filterByMenu('Đinh Lực')">Đinh Lực Soccer</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="nav-item" onclick="showSizeGuide()">Hướng dẫn chọn size</div>
+        <div class="nav-item" onclick="showInfo()">Thông Tin</div>
+    </nav>
+
+    <div id="homeBanner">
+        <img src="banner.jpg" alt="Hoàng Long DLS">
+    </div>
+
+    <div class="container">
+        <h2 id="result-title">Sản phẩm nổi bật</h2>
+        <div class="product-grid" id="productGrid"></div>
+        
+        <div id="seeAllContainer" class="see-all-container">
+            <button class="btn-see-all" onclick="showAllShoes()">Xem tất cả giày</button>
+        </div>
+
+        <div id="pagination" class="pagination"></div>
+    </div>
+
+    <div class="cart-float" onclick="showCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cartNum">0</span>
+    </div>
+
+    <div class="modal" id="authModal">
+        <div class="modal-content" style="width: 380px;">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuth('login')">ĐĂNG NHẬP</div>
+                <div class="auth-tab" id="tabRegister" onclick="switchAuth('register')">ĐĂNG KÝ</div>
+            </div>
+            
+            <div id="loginForm" class="auth-form">
+                <input type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email">
+                <input type="password" id="loginPass" placeholder="Mật khẩu">
+                <button class="btn-buy" onclick="loginAction()">VÀO CỬA HÀNG</button>
+            </div>
+
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <input type="text" id="regUser" placeholder="Tên người dùng mới">
+                <input type="email" id="regEmail" placeholder="Địa chỉ Email">
+                <input type="password" id="regPass" placeholder="Mật khẩu">
+                <button class="btn-buy" style="background: #2ecc71" onclick="registerAction()">TẠO TÀI KHOẢN</button>
+            </div>
+            
+            <button onclick="closeModal('authModal')" style="margin-top:20px; border:none; background:none; cursor:pointer; color:#888;">Quay lại</button>
+        </div>
+    </div>
+
+    <div class="modal" id="sizeGuideModal">
+        <div class="modal-content">
+            <h2 style="color: var(--pink-main); margin-bottom: 5px;">BẢNG QUY ĐỔI SIZE GIÀY</h2>
+            <img src="bangsize.jpg" alt="Bảng size giày DLS" class="size-guide-img">
+            <button onclick="closeModal('sizeGuideModal')" style="margin-top:20px; padding: 10px 30px; background: var(--pink-main); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div class="modal" id="infoModal">
+        <div class="modal-content" style="text-align: left;">
+            <h2 style="color: var(--pink-main); text-align: center;">HOÀNG LONG ĐLS</h2>
+            <div style="line-height: 1.8;">
+                <p><strong>📍 Địa chỉ:</strong> 236D Lê Trọng Tấn, Thanh Xuân, Hà Nội</p>
+                <p><strong>📞 Hotline:</strong> 0869.109.089</p>
+                <p><strong>⏰ Mở cửa:</strong> 08:00 - 22:00</p>
+                <hr style="border: 0.5px solid #eee;">
+                <p><strong>🛡️ Bảo hành:</strong> Bảo hành keo trọn đời.</p>
+                <p><strong>🔄 Đổi trả:</strong> Hỗ trợ đổi size trong 7 ngày (giày chưa qua sử dụng).</p>
+            </div>
+            <button onclick="closeModal('infoModal')" style="margin-top:20px; width: 100%; padding: 12px; background: var(--pink-main); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div class="modal" id="sizeModal">
+        <div class="modal-content">
+            <h3 style="color: var(--pink-main)">CHỌN SIZE GIÀY</h3>
+            <p id="sizeProductName" style="font-weight: bold;"></p>
+            <div class="size-selection" id="sizeSelectionContainer">
+                </div>
+            <button onclick="closeModal('sizeModal')" style="margin-top:20px; cursor:pointer; border:none; background:none; color: #888;">Đóng</button>
+        </div>
+    </div>
+
+    <div class="modal" id="accountMgmtModal">
+        <div class="modal-content">
+            <h2 style="color: var(--pink-main); border-bottom: 2px solid #eee; padding-bottom: 10px;">THÔNG TIN CỦA BẠN</h2>
+            <div style="text-align: left; margin-top: 15px;">
+                <p><strong>Họ tên:</strong> <span id="displayAccName"></span></p>
+                <p><strong>Email:</strong> <span id="displayAccEmail"></span></p>
+                <hr>
+                <p style="font-size: 13px; color: #666;">Nhập mật khẩu cũ:</p>
+                <input type="password" id="oldPass" placeholder="Nhập mật khẩu cũ" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+            
+                <p style="font-size: 13px; color: #666;">Đổi mật khẩu mới:</p>
+                <input type="password" id="newPass" placeholder="Nhập mật khẩu mới" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            <button class="btn-buy" style="margin-top: 20px;" onclick="updateAccount()">LƯU THAY ĐỔI</button>
+            <button class="btn-buy" style="background:#999; margin-top:5px;" onclick="closeModal('accountMgmtModal')">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div class="modal" id="orderTrackingModal">
+        <div class="modal-content" style="width: 450px;">
+            <h2 style="color: var(--pink-main); border-bottom: 2px solid #eee; padding-bottom: 10px;">LỊCH SỬ MUA HÀNG</h2>
+            <div id="orderListArea" style="max-height: 400px; overflow-y: auto; margin-top: 15px;"></div>
+            <button class="btn-buy" style="margin-top: 20px;" onclick="closeModal('orderTrackingModal')">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <h2 style="color: var(--pink-main); border-bottom: 2px solid #eee; padding-bottom: 10px;">Giỏ hàng của bạn</h2>
+            <div id="cartItems"></div>
+            <h3 id="cartTotal" style="margin:20px 0">Tổng: 0đ</h3>
+            <button class="btn-buy" style="background:#27ae60" onclick="openCheckout()">THANH TOÁN NGAY</button>
+            <button onclick="closeModal('cartModal')" style="margin-top:10px; border:none; background:none; cursor:pointer; color:#888;">Tiếp tục mua sắm</button>
+        </div>
+    </div>
+
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <h2 style="color: var(--pink-main)">XÁC NHẬN ĐƠN HÀNG</h2>
+            <div class="checkout-form">
+                <input type="text" id="cusName" placeholder="Họ và tên khách hàng">
+                <input type="tel" id="cusPhone" maxlength="10" placeholder="Số điện thoại (10 chữ số)">
+                <input type="email" id="cusEmail" placeholder="Địa chỉ Email (Để nhận hóa đơn)">
+                <input type="text" id="cusAddress" placeholder="Địa chỉ giao hàng">
+            </div>
+            <div id="orderSummary" style="text-align: left; background: #f9f9f9; padding: 10px; margin-top: 15px; font-size: 14px; border-radius: 5px;"></div>
+            <div id="paymentOptions" style="text-align: left; margin-top: 15px; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+    <p style="font-weight: bold; margin-bottom: 10px; color: var(--pink-main);">Phương thức thanh toán:</p>
+    <label style="display: block; margin-bottom: 10px; cursor: pointer; font-size: 14px;">
+        <input type="radio" name="paymentMethod" value="COD" checked onclick="toggleQR(false)"> 
+        🚚 Thanh toán khi nhận hàng (COD)
+    </label>
+    <label style="display: block; cursor: pointer; font-size: 14px;">
+        <input type="radio" name="paymentMethod" value="QR" onclick="toggleQR(true)"> 
+        🏦 Chuyển khoản qua QR
+    </label>
+</div>
+
+<div id="qrArea" style="display: none; margin-top: 15px; border: 2px dashed var(--pink-main); padding: 15px; border-radius: 10px; background: #fff;">
+    <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Vui lòng quét mã để thanh toán đơn hàng:</p>
+    <img id="mbQrImg" src="" alt="MB Bank QR" style="width: 100%; max-width: 220px; margin: 0 auto; display: block; border-radius: 5px;">
+    <p style="font-size: 12px; color: #ed4d8d; font-weight: bold; margin-top: 10px; text-align: center;">
+        Nội dung CK: <span id="qrNote"></span>
+    </p>
+
+    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; text-align: left;">
+        <label style="cursor: pointer; font-size: 13px; color: #333; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="confirmTransfer" style="width: 18px; height: 18px;">
+            <b>Tôi xác nhận đã chuyển khoản thành công</b>
+        </label>
+        <p style="font-size: 11px; color: #ff0000; margin-top: 5px;">(Hệ thống sẽ kiểm tra giao dịch trước khi xử lý đơn)</p>
+    </div>
+</div>
+            <button class="btn-buy" style="background: var(--pink-main); margin-top: 20px;" onclick="sendOrder()">XÁC NHẬN ĐẶT HÀNG</button>
+            <button onclick="closeModal('checkoutModal')" style="margin-top:10px; border:none; background:none; cursor:pointer;">Quay lại giỏ hàng</button>
+        </div>
+    </div>
+
+    <div class="modal" id="otpModal">
+        <div class="modal-content" style="width: 350px;">
+            <div style="font-size: 40px; color: var(--pink-main); margin-bottom: 10px;">📩</div>
+            <h3 style="color: var(--pink-main); margin-top: 0;">XÁC THỰC EMAIL</h3>
+            <p id="otpMessage" style="font-size: 14px; color: #666; margin-bottom: 20px;"></p>
+            <input type="text" id="otpUserInput" placeholder="Nhập mã 6 chữ số" 
+                   style="width: 90%; padding: 12px; text-align: center; font-size: 18px; letter-spacing: 5px; border: 1px solid #ddd; border-radius: 5px; outline: none;">
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn-buy" style="background: #ccc; flex: 1;" onclick="closeModal('otpModal')">HỦY</button>
+                <button class="btn-buy" style="flex: 2;" onclick="confirmOTPAction()">XÁC NHẬN</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="adminModal">
+    <div class="modal-content" style="width: 90%; max-width: 1000px;">
+        <h2 style="color: var(--pink-main);">HỆ THỐNG QUẢN TRỊ</h2>
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tabAdminPro" onclick="switchAdminTab('products')">SẢN PHẨM</div>
+            <div class="auth-tab" id="tabAdminOrder" onclick="switchAdminTab('orders')">ĐƠN HÀNG</div>
+            <div class="auth-tab" id="tabAdminUser" onclick="switchAdminTab('users')">KHÁCH HÀNG</div>
+        </div>
+
+        <div id="adminProductArea" class="admin-section">
+            <div style="text-align: right; margin-bottom: 15px;">
+                <button class="btn-buy" style="width: auto; padding: 10px 20px; background: #2ecc71;" onclick="openAddProduct()">+ Thêm sản phẩm mới</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="adminProductTableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="adminOrderArea" class="admin-section" style="display:none;">
+    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #27ae60; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-weight: bold; color: #2e7d32;">
+            <i class="fas fa-chart-line"></i> DOANH THU ĐÃ XÁC NHẬN:
+        </div>
+        <div id="adminTotalRevenue" style="font-size: 20px; color: #27ae60; font-weight: bold;">0đ</div>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Chi tiết</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="adminOrderTableBody"></tbody>
+    </table>
+</div>
+
+        <div id="adminUserArea" class="admin-section" style="display:none;">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Tên đăng nhập</th>
+                <th>Email</th>
+                <th>Vai trò</th> 
+            </tr>
+        </thead>
+        <tbody id="adminUserTableBody"></tbody>
+    </table>
+</div>
+
+        <button class="btn-buy" style="margin-top: 20px; background: #999;" onclick="closeModal('adminModal')">ĐÓNG QUẢN TRỊ</button>
+    </div>
+</div>
+
+<div class="modal" id="editProductModal" style="z-index: 3000;">
+    <div class="modal-content" style="width: 350px;">
+        <h3 id="editProductTitle" style="color: var(--pink-main);">SẢN PHẨM</h3>
+        <input type="hidden" id="editProductIndex">
+        <input type="text" id="editProductName" placeholder="Tên sản phẩm" style="width:90%; padding:10px; margin-bottom:10px;">
+        <input type="number" id="editProductPrice" placeholder="Giá tiền" style="width:90%; padding:10px; margin-bottom:10px;">
+        <input type="text" id="editProductImg" placeholder="Tên file ảnh (ví dụ: shoes.jpg)" style="width:90%; padding:10px; margin-bottom:10px;">
+        <button class="btn-buy" onclick="saveProduct()">LƯU SẢN PHẨM</button>
+        <button onclick="closeModal('editProductModal')" style="margin-top:10px; border:none; background:none; cursor:pointer;">Hủy</button>
+    </div>
+</div>
+
+<div class="modal" id="productDetailModal">
+    <div class="modal-content" style="width: 650px; text-align: left; padding: 25px; border-radius: 12px;">
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            
+            <div style="flex: 1; min-width: 260px;">
+                <img id="detailProductImg" src="" alt="" style="width: 100%; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            </div>
+            
+            <div style="flex: 1.2; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 id="detailProductName" style="color: var(--pink-main); margin-top: 0; font-size: 20px; line-height: 1.4;">Tên sản phẩm</h2>
+                    <p id="detailProductPrice" style="font-size: 24px; font-weight: bold; color: var(--pink-main); margin: 10px 0;">0đ</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <span style="font-weight: bold; font-size: 14px; color: #555;">Chọn kích cỡ (Size):</span>
+                        <div id="detailSizeSelection" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;"></div>
+                    </div>
+
+                    <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-weight: bold; font-size: 14px; color: #555;">Số lượng:</span>
+                        <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 5px; width: fit-content; overflow: hidden; background: #fff;">
+                            <button onclick="changeDetailQty(-1)" style="padding: 6px 14px; border: none; background: #f1f1f1; cursor: pointer; font-weight: bold; font-size: 16px;">-</button>
+                            <span id="detailQty" style="padding: 0 15px; font-weight: bold; color: #333; font-size: 14px;">1</span>
+                            <button onclick="changeDetailQty(1)" style="padding: 6px 14px; border: none; background: #f1f1f1; cursor: pointer; font-weight: bold; font-size: 16px;">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-buy" onclick="buyNowAction()" style="flex: 2; padding: 12px; font-size: 14px; background: var(--pink-main); font-weight: bold; color: white; border: none; border-radius: 5px; cursor: pointer;">MUA NGAY</button>
+                    <button class="btn-buy" style="flex: 1; padding: 12px; font-size: 14px; background: #999; font-weight: bold; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="closeModal('productDetailModal')">ĐÓNG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
